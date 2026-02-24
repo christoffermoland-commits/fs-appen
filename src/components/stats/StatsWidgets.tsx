@@ -95,40 +95,45 @@ export function TransferCosts({ managers }: { managers: ManagerStats[] }) {
   );
 }
 
-export function ChipTimeline({ managers }: { managers: ManagerStats[] }) {
-  const allChips = managers.flatMap((m) =>
-    m.chips.map(c => ({ managerName: m.name, ...c }))
-  ).sort((a, b) => a.event - b.event);
+export function ChipsByManager({ managers }: { managers: ManagerStats[] }) {
+  const chipLabels: Record<string, string> = {
+    wildcard: 'Wildcard',
+    freehit: 'Free Hit',
+    bboost: 'Bench Boost',
+    '3xc': 'Triple Captain',
+  };
 
   const chipColors: Record<string, string> = {
-    wildcard: 'text-fpl-cyan',
-    freehit: 'text-fpl-green',
-    bboost: 'text-fpl-gold',
-    '3xc': 'text-fpl-pink',
+    wildcard: 'bg-fpl-cyan/20 text-fpl-cyan',
+    freehit: 'bg-fpl-green/20 text-fpl-green',
+    bboost: 'bg-fpl-gold/20 text-fpl-gold',
+    '3xc': 'bg-fpl-pink/20 text-fpl-pink',
   };
 
   return (
-    <Card>
+    <Card className="sm:col-span-2">
       <h3 className="mb-3 text-sm font-bold text-fpl-muted uppercase tracking-wider">Chip-bruk</h3>
-      {allChips.length > 0 ? (
-        <div className="space-y-2">
-          {allChips.map((c, i) => (
-            <div key={`${c.managerName}-${c.event}-${i}`} className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-2">
-                <span className="rounded bg-fpl-dark px-1.5 py-0.5 text-xs text-fpl-muted">
-                  GW{c.event}
-                </span>
-                <span className="truncate">{c.managerName}</span>
-              </div>
-              <span className={`font-medium ${chipColors[c.name] || 'text-foreground'}`}>
-                {c.name}
-              </span>
+      <div className="space-y-3">
+        {managers.map((m) => (
+          <div key={m.teamId} className="flex items-start gap-3">
+            <span className="shrink-0 w-28 truncate text-sm font-medium pt-0.5">{m.name}</span>
+            <div className="flex flex-wrap gap-1.5">
+              {m.chips.length > 0 ? (
+                [...m.chips].sort((a, b) => a.event - b.event).map((c, i) => (
+                  <span
+                    key={i}
+                    className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${chipColors[c.name] || 'bg-fpl-surface text-foreground'}`}
+                  >
+                    {chipLabels[c.name] || c.name} GW{c.event}
+                  </span>
+                ))
+              ) : (
+                <span className="text-xs text-fpl-muted pt-0.5">Ingen chips brukt</span>
+              )}
             </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-sm text-fpl-muted">Ingen chips brukt enda</p>
-      )}
+          </div>
+        ))}
+      </div>
     </Card>
   );
 }

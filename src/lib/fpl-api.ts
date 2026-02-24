@@ -6,6 +6,7 @@ import type {
   EntryHistory,
   GameweekPicks,
   LiveEvent,
+  Transfer,
 } from './types';
 
 async function fplFetch<T>(path: string, revalidate: number): Promise<T> {
@@ -40,6 +41,10 @@ export function getGameweekPicks(teamId: string | number, gw: number): Promise<G
 
 export function getLiveEvent(eventId: number): Promise<LiveEvent> {
   return fplFetch(`/event/${eventId}/live/`, 60);
+}
+
+export function getTransfers(teamId: string | number): Promise<Transfer[]> {
+  return fplFetch(`/entry/${teamId}/transfers/`, 300);
 }
 
 export async function getCurrentGameweek(): Promise<number> {
