@@ -95,7 +95,7 @@ export default function ManagerCharts({
                   fontSize: '12px',
                 }}
                 labelFormatter={(v) => `Gameweek ${v}`}
-                formatter={(value: number) => [value.toLocaleString('nb-NO'), 'Overall rank']}
+                formatter={(value) => [Number(value).toLocaleString('nb-NO'), 'Overall rank']}
               />
               <Line
                 type="monotone"

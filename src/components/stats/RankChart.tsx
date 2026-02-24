@@ -66,7 +66,7 @@ export default function RankChart({ managers }: { managers: ManagerRankData[] })
               fontSize: '12px',
             }}
             labelFormatter={(v) => `Gameweek ${v}`}
-            formatter={(value: number, name: string) => [`#${value}`, name]}
+            formatter={(value, name) => [`#${value}`, name]}
           />
           <Legend wrapperStyle={{ fontSize: '12px' }} />
           {managers.map((m, i) => (
