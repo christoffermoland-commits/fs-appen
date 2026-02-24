@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
@@ -18,8 +19,8 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 border-b border-fpl-border bg-fpl-dark/95 backdrop-blur-sm">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-2xl">⚽</span>
+        <Link href="/" className="flex items-center gap-2.5">
+          <Image src="/pl-logo.png" alt="Premier League" width={36} height={36} className="rounded" />
           <span className="bg-gradient-to-r from-fpl-green to-fpl-cyan bg-clip-text text-xl font-bold text-transparent">
             Pøseligaen
           </span>

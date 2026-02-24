@@ -44,8 +44,7 @@ export default function LeagueTable({ entries }: { entries: StandingsEntry[] }) 
           <tr className="border-b border-fpl-border bg-fpl-dark">
             <th className="px-3 py-3 text-left font-medium text-fpl-muted w-12">#</th>
             <th className="px-3 py-3 text-center font-medium text-fpl-muted w-12"></th>
-            <th className="px-3 py-3 text-left font-medium text-fpl-muted">Manager</th>
-            <th className="hidden px-3 py-3 text-left font-medium text-fpl-muted sm:table-cell">Lag</th>
+            <th className="px-3 py-3 text-left font-medium text-fpl-muted">Lag</th>
             <th className="px-3 py-3 text-right font-medium text-fpl-muted">GW</th>
             <th className="px-3 py-3 text-right font-medium text-fpl-muted">Totalt</th>
           </tr>
@@ -80,12 +79,9 @@ export default function LeagueTable({ entries }: { entries: StandingsEntry[] }) 
                   href={`/manager/${entry.entry}`}
                   className="font-medium text-foreground hover:text-fpl-green transition-colors"
                 >
-                  {entry.player_name}
+                  {entry.entry_name}
                 </Link>
-                <div className="text-xs text-fpl-muted sm:hidden">{entry.entry_name}</div>
-              </td>
-              <td className="hidden px-3 py-3 text-fpl-muted sm:table-cell">
-                {entry.entry_name}
+                <div className="text-xs text-fpl-muted">{entry.player_name}</div>
               </td>
               <td className="px-3 py-3 text-right">
                 <span className={cn(
