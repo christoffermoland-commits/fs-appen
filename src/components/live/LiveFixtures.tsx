@@ -36,25 +36,18 @@ function MatchCard({
   const reds = fixture.stats.find(s => s.identifier === 'red_cards');
   const bonus = fixture.stats.find(s => s.identifier === 'bonus');
 
-  const homeGoalscorers = goals?.h || [];
-  const awayGoalscorers = goals?.a || [];
-  const homeAssists = assists?.h || [];
-  const awayAssists = assists?.a || [];
-
   const getPlayerName = (elementId: number) => playerMap[elementId]?.web_name || `#${elementId}`;
 
-  // Build goal event strings with assists
-  const buildGoalEvents = (scorers: { element: number; value: number }[], assistList: { element: number; value: number }[]) => {
-    return scorers.map(g => {
-      const goalText = g.value > 1 ? `${getPlayerName(g.element)} x${g.value}` : getPlayerName(g.element);
-      // Find assist for this goal (any assister on the same side)
-      const assistNames = assistList.map(a => getPlayerName(a.element));
-      return { goalText, assistNames };
-    });
-  };
+  // Format player list for a stat category
+  const formatPlayers = (entries: { element: number; value: number }[]) =>
+    entries.map(e => e.value > 1 ? `${getPlayerName(e.element)} x${e.value}` : getPlayerName(e.element));
 
-  const homeGoalEvents = buildGoalEvents(homeGoalscorers, homeAssists);
-  const awayGoalEvents = buildGoalEvents(awayGoalscorers, awayAssists);
+  // Check if there are any events to show
+  const hasGoals = (goals?.h.length || 0) + (goals?.a.length || 0) > 0;
+  const hasAssists = (assists?.h.length || 0) + (assists?.a.length || 0) > 0;
+  const hasYellows = (yellows?.h.length || 0) + (yellows?.a.length || 0) > 0;
+  const hasReds = (reds?.h.length || 0) + (reds?.a.length || 0) > 0;
+  const hasEvents = hasGoals || hasAssists || hasYellows || hasReds;
 
   return (
     <div className={`rounded-lg border p-3 ${
@@ -108,53 +101,74 @@ function MatchCard({
         </div>
       </div>
 
-      {/* Goal events with assists */}
-      {(homeGoalEvents.length > 0 || awayGoalEvents.length > 0) && (
+      {/* Match events grouped by category */}
+      {hasEvents && (
         <div className="mt-2 flex justify-between gap-2 text-[11px]">
-          <div className="flex-1 text-right space-y-0.5">
-            {homeGoalEvents.map((g, i) => (
-              <div key={i}>
-                <span className="text-fpl-green">&#9917; {g.goalText}</span>
-                {g.assistNames.length > 0 && (
-                  <span className="text-fpl-muted text-[10px]"> ({g.assistNames.join(', ')})</span>
-                )}
+          {/* Home side */}
+          <div className="flex-1 text-right space-y-1">
+            {hasGoals && goals!.h.length > 0 && (
+              <div className="space-y-0.5">
+                {formatPlayers(goals!.h).map((name, i) => (
+                  <div key={`gh${i}`} className="text-fpl-green">⚽ {name}</div>
+                ))}
               </div>
-            ))}
-          </div>
-          <div className="w-[50px]" />
-          <div className="flex-1 space-y-0.5">
-            {awayGoalEvents.map((g, i) => (
-              <div key={i}>
-                <span className="text-fpl-green">&#9917; {g.goalText}</span>
-                {g.assistNames.length > 0 && (
-                  <span className="text-fpl-muted text-[10px]"> ({g.assistNames.join(', ')})</span>
-                )}
+            )}
+            {hasAssists && assists!.h.length > 0 && (
+              <div className="space-y-0.5">
+                {formatPlayers(assists!.h).map((name, i) => (
+                  <div key={`ah${i}`} className="text-fpl-cyan">👟 {name}</div>
+                ))}
               </div>
-            ))}
+            )}
+            {hasYellows && yellows!.h.length > 0 && (
+              <div className="space-y-0.5">
+                {formatPlayers(yellows!.h).map((name, i) => (
+                  <div key={`yh${i}`} className="text-yellow-400">🟨 {name}</div>
+                ))}
+              </div>
+            )}
+            {hasReds && reds!.h.length > 0 && (
+              <div className="space-y-0.5">
+                {formatPlayers(reds!.h).map((name, i) => (
+                  <div key={`rh${i}`} className="text-red-400">🟥 {name}</div>
+                ))}
+              </div>
+            )}
           </div>
-        </div>
-      )}
 
-      {/* Cards */}
-      {((yellows && (yellows.h.length > 0 || yellows.a.length > 0)) ||
-        (reds && (reds.h.length > 0 || reds.a.length > 0))) && (
-        <div className="mt-1 flex justify-between gap-2 text-[11px]">
-          <div className="flex-1 text-right space-y-0.5">
-            {yellows?.h.map((c, i) => (
-              <div key={`yh${i}`} className="text-yellow-400">&#9632; {getPlayerName(c.element)}</div>
-            ))}
-            {reds?.h.map((c, i) => (
-              <div key={`rh${i}`} className="text-red-400">&#9632; {getPlayerName(c.element)}</div>
-            ))}
-          </div>
+          {/* Center divider */}
           <div className="w-[50px]" />
-          <div className="flex-1 space-y-0.5">
-            {yellows?.a.map((c, i) => (
-              <div key={`ya${i}`} className="text-yellow-400">&#9632; {getPlayerName(c.element)}</div>
-            ))}
-            {reds?.a.map((c, i) => (
-              <div key={`ra${i}`} className="text-red-400">&#9632; {getPlayerName(c.element)}</div>
-            ))}
+
+          {/* Away side */}
+          <div className="flex-1 space-y-1">
+            {hasGoals && goals!.a.length > 0 && (
+              <div className="space-y-0.5">
+                {formatPlayers(goals!.a).map((name, i) => (
+                  <div key={`ga${i}`} className="text-fpl-green">⚽ {name}</div>
+                ))}
+              </div>
+            )}
+            {hasAssists && assists!.a.length > 0 && (
+              <div className="space-y-0.5">
+                {formatPlayers(assists!.a).map((name, i) => (
+                  <div key={`aa${i}`} className="text-fpl-cyan">👟 {name}</div>
+                ))}
+              </div>
+            )}
+            {hasYellows && yellows!.a.length > 0 && (
+              <div className="space-y-0.5">
+                {formatPlayers(yellows!.a).map((name, i) => (
+                  <div key={`ya${i}`} className="text-yellow-400">🟨 {name}</div>
+                ))}
+              </div>
+            )}
+            {hasReds && reds!.a.length > 0 && (
+              <div className="space-y-0.5">
+                {formatPlayers(reds!.a).map((name, i) => (
+                  <div key={`ra${i}`} className="text-red-400">🟥 {name}</div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
